@@ -20,19 +20,10 @@ You can set the locales globally or.. into each component separately!
 ```js
 import VueLocalizer from 'vue-localizer'
 
-// install
-Vue.use(VueLocalizer)
-
-// the constructor comes with 2 optional arguments:
-// - globalLocales (default: {})
-// - language (default: 'en')
-var localizer = new VueLocalizer()
-```
-
-#### You can add before/after change hooks
-```js
-localizer.beforeChange((lang) => {})
-localizer.afterChange((lang) => {})
+// Install with options object: 
+// - options.locales (default: {})
+// - options.lang (default: 'en')
+Vue.use(VueLocalizer, options)
 ```
 
 #### Add locales to your components if you want
@@ -54,6 +45,12 @@ export default {
 
   methods: {..}
 }
+```
+
+#### You can add before/after change hooks in your component
+```js
+this.$lang.beforeChange((lang) => {})
+this.$lang.afterChange((lang) => {})
 ```
 
 #### Change the language
