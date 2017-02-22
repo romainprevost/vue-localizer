@@ -1,103 +1,69 @@
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
 
 var _assign = require('babel-runtime/core-js/object/assign');
 
 var _assign2 = _interopRequireDefault(_assign);
 
-var _classCallCheck2 = require('babel-runtime/helpers/classCallCheck');
-
-var _classCallCheck3 = _interopRequireDefault(_classCallCheck2);
-
-var _createClass2 = require('babel-runtime/helpers/createClass');
-
-var _createClass3 = _interopRequireDefault(_createClass2);
-
 var _translator = require('./translator');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var Vue;
+var Plugin = {};
 
 var data = {
-  _lang: { value: '' },
+    _lang: { value: '' },
 
-  locales: {},
+    locales: {},
 
-  get lang() {
-    return this._lang.value;
-  },
+    _before: function _before(lang) {},
+    _after: function _after(lang) {},
+    change: function change(lang) {
+        if (this._lang.value === lang) return;
 
-  set lang(value) {
-    this._lang.value = value;
-  }
+        this._before && this._before(this._lang.value);
+
+        this._lang.value = lang;
+
+        this._after && this._after(this._lang.value);
+    },
+
+
+    get lang() {
+        return this._lang.value;
+    },
+
+    set lang(value) {
+        this._lang.value = value;
+    }
 };
 
-var Localizer = function () {
-  function Localizer() {
-    var locales = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
-    var lang = arguments.length <= 1 || arguments[1] === undefined ? 'en' : arguments[1];
-    (0, _classCallCheck3.default)(this, Localizer);
+var $lang = function $lang(path, repls) {
+    return (0, _translator.translate)(this.$options.locales, data.lang, path, repls) || (0, _translator.translate)(data.locales, data.lang, path, repls) || path;
+};
 
-    if (!Localizer.installed) {
-      throw new Error('Please install the Localizer with Vue.use() before creating an instance.');
-    }
+(0, _assign2.default)($lang, {
+    change: data.change.bind(data),
+    beforeChange: function beforeChange(fn) {
+        data._before = fn;
+    },
+    afterChange: function afterChange(fn) {
+        data._after = fn;
+    },
 
-    data.lang = lang;
-    data.locales = locales;
-
-    Vue.util.defineReactive({}, null, data._lang);
-
-    Vue.prototype.$lang = function (path, repls) {
-      // search for the path 'locally'
-      return (0, _translator.translate)(this.$options.locales, data.lang, path, repls)
-      // search for the path 'globally'
-       || (0, _translator.translate)(data.locales, data.lang, path, repls)
-      // if the path does not exist, return the path
-       || path;
-    };
-
-    (0, _assign2.default)(Vue.prototype.$lang, {
-      change: this.change,
-      get: function get() {
+    get: function get() {
         return data.lang;
-      }
-    });
-  }
-
-  (0, _createClass3.default)(Localizer, [{
-    key: 'change',
-    value: function change(lang) {
-      if (data.lang === lang) return;
-
-      this._before && this._before(data.lang);
-
-      data.lang = lang;
-
-      this._after && this._after(data.lang);
     }
-  }, {
-    key: 'beforeChange',
-    value: function beforeChange(fn) {
-      this._before = fn;
-    }
-  }, {
-    key: 'afterChange',
-    value: function afterChange(fn) {
-      this._after = fn;
-    }
-  }]);
-  return Localizer;
-}();
+});
 
-Localizer.installed = false;
-
-Localizer.install = function (vue) {
-  Vue = vue;
-  Localizer.installed = true;
+Plugin.install = function (Vue, options) {
+    data.lang = options.lang;
+    data.locales = options.locales;
+    Vue.util.defineReactive({}, null, data._lang);
+    Vue.prototype.$lang = $lang;
 };
 
-exports.default = Localizer;
+exports.default = Plugin;

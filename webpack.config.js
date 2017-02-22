@@ -3,7 +3,7 @@ var webpack = require('webpack')
 module.exports = {
   entry: './demo/main.js',
   output: {
-    path: './demo/build',
+    path: '/demo/build',
     publicPath: '/build/',
     filename: 'build.js'
   },
@@ -11,11 +11,11 @@ module.exports = {
     loaders: [
       {
         test: /\.vue$/,
-        loader: 'vue'
+        loader: 'vue-loader'
       },
       {
         test: /\.js$/,
-        loader: 'babel',
+        loader: 'babel-loader',
         exclude: /node_modules/
       }
     ]
@@ -40,6 +40,6 @@ if (process.env.NODE_ENV === 'production') {
         warnings: false
       }
     }),
-    new webpack.optimize.OccurenceOrderPlugin()
+    new webpack.optimize.OccurrenceOrderPlugin()
   ])
 }

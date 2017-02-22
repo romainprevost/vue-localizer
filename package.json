@@ -1,9 +1,9 @@
 {
   "name": "vue-localizer",
-  "version": "1.1.1",
-  "author": "Pantelis Peslis <pespantelis@gmail.com>",
+  "version": "1.2.0",
+  "author": "Pantelis Peslis <pespantelis@gmail.com>, Romain Prevost <romain.prevost@melusim.fr>",
   "license": "MIT",
-  "description": "Localization plugin for Vue.js",
+  "description": "Localization plugin for Vue.js 2",
   "keywords": [
     "vue",
     "localizer",
@@ -27,9 +27,10 @@
   },
   "dependencies": {
     "babel-runtime": "^5.8.0",
-    "vue": "^1.0.0"
+    "vue": "^2.0.0"
   },
   "devDependencies": {
+    "babel-cli": "^6.23.0",
     "babel-core": "^6.0.0",
     "babel-loader": "^6.0.0",
     "babel-plugin-transform-runtime": "^6.0.0",
@@ -43,17 +44,17 @@
     "karma-phantomjs-launcher": "^1.0.0",
     "karma-sinon-chai": "^1.2.0",
     "karma-spec-reporter": "0.0.26",
-    "karma-webpack": "^1.7.0",
+    "karma-webpack": "^2.0.0",
     "lolex": "^1.4.0",
     "mocha": "^2.4.5",
+    "nprogress": "^0.2.0",
     "phantomjs-prebuilt": "^2.1.7",
     "sinon": "^1.17.3",
     "sinon-chai": "^2.8.0",
-    "vue-hot-reload-api": "^1.2.0",
-    "vue-html-loader": "^1.0.0",
-    "vue-loader": "^8.2.1",
+    "vue-loader": "^10.0.2",
     "vue-style-loader": "^1.0.0",
-    "webpack": "^1.12.2",
-    "webpack-dev-server": "^1.12.0"
+    "vue-template-compiler": "^2.1.0",
+    "webpack": "^2.1.10",
+    "webpack-dev-server": "^2.1.0"
   }
 }

@@ -1,38 +1,39 @@
-import Vue from 'vue'
+import Vue from 'vue/dist/vue.common'
 import VueLocalizer from '../src/index'
 import NProgress from 'nprogress'
+import filters from './filters'
 import Child from './child.vue'
 
-// install
-Vue.use(VueLocalizer)
-
 // global locales
-var locales = {
-  en: {
-    name: {
-      first: 'Pantelis',
-      last: 'Peslis'
+let locales = {
+    en: {
+        name: {
+            first: 'Pantelis',
+            last: 'Peslis'
+        },
+        color: 'Blue'
     },
-    color: 'Blue'
-  },
-  el: {
-    name: {
-      first: 'Παντελής',
-      last: 'Πεσλής'
-    },
-    color: 'Μπλε'
-  }
-}
+    el: {
+        name: {
+            first: 'Παντελής',
+            last: 'Πεσλής'
+        },
+        color: 'Μπλε'
+    }
+};
 
-// create an instance
-var localizer = new VueLocalizer(locales)
+let lang = 'en';
 
-// add hooks
-localizer.beforeChange(NProgress.start)
-localizer.afterChange(NProgress.done)
+// install
+Vue.use(VueLocalizer, { locales, lang });
 
 new Vue({
-  el: 'body',
+    mixins: [filters],
+    created() {
+        // add hooks
+        this.$lang.beforeChange(NProgress.start);
+        this.$lang.afterChange(NProgress.done);
+    },
   data: {
     selected: 'en',
     globalLocales: locales
@@ -56,8 +57,8 @@ new Vue({
   },
   methods: {
     change (lang) {
-      this.$lang.change(lang)
-      this.selected = lang
+        this.$lang.change(lang)
+        this.selected = lang
     },
     isSelected (lang) {
       return {
@@ -65,4 +66,4 @@ new Vue({
       }
     }
   }
-})
+}).$mount('#app');

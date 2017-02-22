@@ -1,73 +1,61 @@
 import { translate } from './translator'
 
-var Vue
+let Plugin = {};
 
-var data = {
-  _lang: { value: '' },
+let data = {
+    _lang: { value: '' },
 
-  locales: {},
+    locales: {},
 
-  get lang () {
-    return this._lang.value
-  },
+    _before(lang) {},
 
-  set lang (value) {
-    this._lang.value = value
-  }
-}
+    _after(lang) {},
 
-class Localizer {
-  constructor (locales = {}, lang = 'en') {
-    if (!Localizer.installed) {
-      throw new Error(
-        'Please install the Localizer with Vue.use() before creating an instance.'
-      )
+    change(lang) {
+        if (this._lang.value === lang) return;
+
+        this._before && this._before(this._lang.value)
+
+        this._lang.value = lang;
+
+        this._after && this._after(this._lang.value)
+
+    },
+
+    get lang () {
+        return this._lang.value
+    },
+
+    set lang (value) {
+        this._lang.value = value
     }
+};
 
-    data.lang = lang
-    data.locales = locales
-
-    Vue.util.defineReactive({}, null, data._lang)
-
-    Vue.prototype.$lang = function (path, repls) {
-      // search for the path 'locally'
-      return translate(this.$options.locales, data.lang, path, repls)
+let $lang = function (path, repls) {
+    // search for the path 'locally'
+    return translate(this.$options.locales, data.lang, path, repls)
         // search for the path 'globally'
         || translate(data.locales, data.lang, path, repls)
         // if the path does not exist, return the path
         || path
-    }
+};
 
-    Object.assign(Vue.prototype.$lang, {
-      change: this.change.bind(this),
-      get: () => data.lang
-    })
-  }
+Object.assign($lang, {
+    change: data.change.bind(data),
+    beforeChange (fn) {
+        data._before = fn
+    },
+    afterChange (fn) {
+        data._after = fn
+    },
+    get: () => data.lang
+});
 
-  change (lang) {
-    if (data.lang === lang) return
+Plugin.install = (Vue, options) => {
+    data.lang = options.lang;
+    data.locales = options.locales;
+    Vue.util.defineReactive({}, null, data._lang);
+    Vue.prototype.$lang = $lang;
+};
 
-    this._before && this._before(data.lang)
-
-    data.lang = lang
-
-    this._after && this._after(data.lang)
-  }
-
-  beforeChange (fn) {
-    this._before = fn
-  }
-
-  afterChange (fn) {
-    this._after = fn
-  }
-}
-
-Localizer.installed = false
-
-Localizer.install = (vue) => {
-  Vue = vue
-  Localizer.installed = true
-}
-
-export default Localizer
+export default Plugin
