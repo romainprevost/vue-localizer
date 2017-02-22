@@ -3,8 +3,8 @@ var webpack = require('webpack')
 module.exports = {
   entry: './demo/main.js',
   output: {
-    path: '/demo/build',
-    publicPath: '/build/',
+    path:  __dirname + '/demo/build',
+    publicPath: 'build/',
     filename: 'build.js'
   },
   module: {
@@ -24,7 +24,12 @@ module.exports = {
     historyApiFallback: true,
     noInfo: true
   },
-  devtool: '#eval-source-map'
+  devtool: '#eval-source-map',
+    resolve: {
+        alias: {
+            'vue$': 'vue/dist/vue.common.js'
+        }
+    }
 }
 
 if (process.env.NODE_ENV === 'production') {
