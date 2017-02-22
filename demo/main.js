@@ -22,10 +22,9 @@ let locales = {
     }
 };
 
-let lang = 'en';
 
 // install
-Vue.use(VueLocalizer, { locales, lang });
+Vue.use(VueLocalizer, { locales });
 
 new Vue({
     mixins: [filters],

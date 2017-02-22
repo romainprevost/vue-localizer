@@ -52,7 +52,7 @@ Object.assign($lang, {
 });
 
 Plugin.install = (Vue, options) => {
-    data.lang = options.lang;
+    data.lang = options.lang || 'en';
     data.locales = options.locales;
     Vue.util.defineReactive({}, null, data._lang);
     Vue.prototype.$lang = $lang;
