@@ -40,6 +40,31 @@ let $lang = function (path, repls) {
         || path
 };
 
+let mergeStrategy = function (mixinLocales, vmLocales) {
+    if (!mixinLocales) {
+        return vmLocales
+    }
+
+    if (!vmLocales) {
+        return mixinLocales
+    }
+
+    let locales = {};
+
+    const languages = Object.keys(vmLocales);
+    for (let lang of languages) {
+        if (mixinLocales[lang]) {
+            locales[lang] = { ...mixinLocales[lang], ...vmLocales[lang] }
+        } else {
+            locales[lang] = vmLocales[lang];
+        }
+    }
+
+    return locales;
+
+}
+
+
 Object.assign($lang, {
     change: data.change.bind(data),
     beforeChange (fn) {
@@ -56,6 +81,7 @@ Plugin.install = (Vue, options) => {
     data.locales = options.locales || {};
     Vue.util.defineReactive({}, null, data._lang);
     Vue.prototype.$lang = $lang;
+    Vue.config.optionMergeStrategies.locales = mergeStrategy;
 };
 
 export default Plugin
